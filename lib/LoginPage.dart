@@ -1,0 +1,132 @@
+import 'package:flutter/material.dart';
+
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+enum FormType { login, register }
+
+class _LoginPageState extends State<LoginPage> {
+  final formKey = GlobalKey<FormState>();
+  FormType _formType = FormType.login;
+  String _email = "";
+  String _password = "";
+
+  bool validateAndSave() {
+    final form=formKey.currentState;
+    if (form.validate()){
+      form.save();
+
+          return true;
+    } else {
+      return false;
+    }
+  }
+
+  gotToRegister() {
+    formKey.currentState.reset();
+    setState(() {
+      _formType = FormType.register;
+    });
+  }
+
+  gotToLogin() {
+    formKey.currentState.reset();
+    setState(() {
+      _formType = FormType.login;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Start your journey")),
+      body: SingleChildScrollView(
+        child: Container(
+          margin: EdgeInsets.all(15.0),
+          child: Form(
+            key: formKey,
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: createInputFields() + createButonss())),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> createInputFields() {
+    return [
+      SizedBox(height: 10.0),
+      logo(),
+      SizedBox(height: 10.0),
+      TextFormField(decoration: InputDecoration(labelText: "email"),
+      validator: (value){
+        return value.isEmpty ?  'Email is  required' : null;
+      },
+      onSaved: (value){
+        return _email=value;
+      },),
+      SizedBox(height: 10.0),
+      TextFormField(decoration: InputDecoration(labelText: "password"),
+          obscureText: true,
+          validator: (value){
+            return value.isEmpty ?  'Password is required' : null;
+          },
+          onSaved: (value){
+            return _password=value;
+          })
+    ];
+  }
+
+  List<Widget> createButonss() {
+    if (_formType==FormType.login){ return [
+      SizedBox(height: 10.0),
+      RaisedButton(
+        child: Text("Login", style: TextStyle(fontSize: 20.0)),
+        color: Colors.purple[700],
+        textColor: Colors.white,
+        onPressed: () {
+          validateAndSave();
+        },
+      ),
+      FlatButton(
+        child: Text("New to us ? Create Accaunt",
+            style: TextStyle(fontSize: 20.0)),
+        textColor: Colors.grey[400],
+        onPressed: () {
+       gotToRegister();
+        },
+      )
+    ];} else {
+      return [
+        SizedBox(height: 10.0),
+        RaisedButton(
+          child: Text("Create accaunt", style: TextStyle(fontSize: 20.0)),
+          color: Colors.purple[700],
+          textColor: Colors.white,
+          onPressed: () {
+            validateAndSave();
+          },
+        ),
+        FlatButton(
+          child: Text("Allready with us ? Login",
+              style: TextStyle(fontSize: 20.0)),
+          textColor: Colors.grey[400],
+          onPressed: () {
+            gotToLogin();
+          },
+        )
+      ];
+    }
+  }
+
+  Widget logo() {
+    return Hero(
+        tag: "Author",
+        child: CircleAvatar(
+            radius: MediaQuery.of(context).size.width / 4,
+            backgroundColor: Colors.transparent,
+            child: Image.asset("assets/pencil.png")));
+  }
+}
