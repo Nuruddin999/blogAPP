@@ -5,18 +5,24 @@ import 'User.dart';
 import 'api/blogservice.dart';
 
 class MainPage extends StatefulWidget {
+
+  MainPage({this.auth, this.onSignedOut});
+  final Authentification auth;
+  final VoidCallback onSignedOut;
+
   @override
   _MainPageState createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
-  blogservice b=blogservice();
-  @override
-  void initState() {
-    Authentification auth=Auth();
-auth.signUp("sg7720@gmail.com", "234");
-
-  }
+ void _exit() async {
+   try {
+     await widget.auth.logOut();
+     widget.onSignedOut();
+   } catch (e){
+     print(e.toString());
+   }
+ }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +39,9 @@ auth.signUp("sg7720@gmail.com", "234");
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               IconButton(
-                  icon: Image.asset("assets/login.ico"), onPressed: () {}),
+                  icon: Image.asset("assets/login.ico"), onPressed: () {
+                    _exit();
+              }),
               IconButton(
                   icon: Icon(Icons.add_a_photo, color: Colors.deepOrangeAccent), onPressed: () {})
             ],

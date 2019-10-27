@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 
+import 'Authentification.dart';
+
 class LoginPage extends StatefulWidget {
+  LoginPage({this.auth, this.onSignedIn});
+
+  final Authentification auth;
+  final VoidCallback onSignedIn;
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -14,13 +21,34 @@ class _LoginPageState extends State<LoginPage> {
   String _password = "";
 
   bool validateAndSave() {
-    final form=formKey.currentState;
-    if (form.validate()){
+    final form = formKey.currentState;
+    if (form.validate()) {
       form.save();
-
-          return true;
+      return true;
     } else {
       return false;
+    }
+  }
+
+  void submit() async {
+    if (validateAndSave()) {
+      try {
+        if (_formType == FormType.login) {
+          String uid = await widget.auth.signIn(_email, _password);
+          print("Logged in   $uid");
+          if (uid.isNotEmpty) {
+            widget.onSignedIn();
+          }
+        } else {
+          String uid = await widget.auth.signUp(_email, _password);
+          print("Registered in   $uid");
+          if (uid.isNotEmpty) {
+            widget.onSignedIn();
+          }
+        }
+      } catch (e) {
+        print(e.toString());
+      }
     }
   }
 
@@ -46,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Container(
           margin: EdgeInsets.all(15.0),
           child: Form(
-            key: formKey,
+              key: formKey,
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: createInputFields() + createButonss())),
@@ -60,45 +88,50 @@ class _LoginPageState extends State<LoginPage> {
       SizedBox(height: 10.0),
       logo(),
       SizedBox(height: 10.0),
-      TextFormField(decoration: InputDecoration(labelText: "email"),
-      validator: (value){
-        return value.isEmpty ?  'Email is  required' : null;
-      },
-      onSaved: (value){
-        return _email=value;
-      },),
+      TextFormField(
+        decoration: InputDecoration(labelText: "email"),
+        validator: (value) {
+          return value.isEmpty ? 'Email is  required' : null;
+        },
+        onSaved: (value) {
+          return _email = value;
+        },
+      ),
       SizedBox(height: 10.0),
-      TextFormField(decoration: InputDecoration(labelText: "password"),
+      TextFormField(
+          decoration: InputDecoration(labelText: "password"),
           obscureText: true,
-          validator: (value){
-            return value.isEmpty ?  'Password is required' : null;
+          validator: (value) {
+            return value.isEmpty ? 'Password is required' : null;
           },
-          onSaved: (value){
-            return _password=value;
+          onSaved: (value) {
+            return _password = value;
           })
     ];
   }
 
   List<Widget> createButonss() {
-    if (_formType==FormType.login){ return [
-      SizedBox(height: 10.0),
-      RaisedButton(
-        child: Text("Login", style: TextStyle(fontSize: 20.0)),
-        color: Colors.purple[700],
-        textColor: Colors.white,
-        onPressed: () {
-          validateAndSave();
-        },
-      ),
-      FlatButton(
-        child: Text("New to us ? Create Accaunt",
-            style: TextStyle(fontSize: 20.0)),
-        textColor: Colors.grey[400],
-        onPressed: () {
-       gotToRegister();
-        },
-      )
-    ];} else {
+    if (_formType == FormType.login) {
+      return [
+        SizedBox(height: 10.0),
+        RaisedButton(
+          child: Text("Login", style: TextStyle(fontSize: 20.0)),
+          color: Colors.purple[700],
+          textColor: Colors.white,
+          onPressed: () {
+            submit();
+          },
+        ),
+        FlatButton(
+          child: Text("New to us ? Create Accaunt",
+              style: TextStyle(fontSize: 20.0)),
+          textColor: Colors.grey[400],
+          onPressed: () {
+            gotToRegister();
+          },
+        )
+      ];
+    } else {
       return [
         SizedBox(height: 10.0),
         RaisedButton(
@@ -106,7 +139,7 @@ class _LoginPageState extends State<LoginPage> {
           color: Colors.purple[700],
           textColor: Colors.white,
           onPressed: () {
-            validateAndSave();
+            submit();
           },
         ),
         FlatButton(
