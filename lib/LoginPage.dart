@@ -45,13 +45,13 @@ class _LoginPageState extends State<LoginPage> {
           String uid = await widget.auth.signUp(_email, _password);
           print("Registered in   $uid");
           if (uid.isNotEmpty) {
-            dialog.information(
+            dialog.showinfo(
                 context, "Success!", "Your accaunt has been created");
             widget.onSignedIn();
           }
         }
       } catch (e) {
-        dialog.information(context, "Error",
+        dialog.showerror(context, "Error",
             "Sorry something goes wrong,  please check your login and password");
         print(e.toString());
       }
