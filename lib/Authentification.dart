@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'DialogBox.dart';
 import 'User.dart';
 
 abstract class Authentification {
@@ -15,7 +16,6 @@ abstract class Authentification {
 
 class Auth implements Authentification {
   final String userurl = "http://10.0.2.2:3000/users";
-
   Future<String> signIn(String email, String password) async {
     String result;
     List<User> list = [];
@@ -56,6 +56,7 @@ class Auth implements Authentification {
         response.statusCode > 400 ||
         json == null) {
       throw new Exception("Error whil creating post");
+
     } else {
       var data = jsonDecode(response.body);
       for (var item in data) {

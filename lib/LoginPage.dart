@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'Authentification.dart';
+import 'DialogBox.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({this.auth, this.onSignedIn});
@@ -15,6 +16,7 @@ class LoginPage extends StatefulWidget {
 enum FormType { login, register }
 
 class _LoginPageState extends State<LoginPage> {
+  DialogBox dialog = new DialogBox();
   final formKey = GlobalKey<FormState>();
   FormType _formType = FormType.login;
   String _email = "";
@@ -43,10 +45,14 @@ class _LoginPageState extends State<LoginPage> {
           String uid = await widget.auth.signUp(_email, _password);
           print("Registered in   $uid");
           if (uid.isNotEmpty) {
+            dialog.information(
+                context, "Success!", "Your accaunt has been created");
             widget.onSignedIn();
           }
         }
       } catch (e) {
+        dialog.information(context, "Error",
+            "Sorry something goes wrong,  please check your login and password");
         print(e.toString());
       }
     }
