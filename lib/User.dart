@@ -13,6 +13,9 @@ class User {
     var map = Map<String, dynamic>();
     map['email'] = email;
     map['password'] = password;
-    return map;
+    if (id != null) {
+      map['id'] = id;
+    } return map;
   }
+
 }

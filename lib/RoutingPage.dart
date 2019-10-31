@@ -18,18 +18,17 @@ enum AuthStatus { signed, notsigned }
 class _RoutingPageState extends State<RoutingPage> {
   AuthStatus status = AuthStatus.notsigned;
 
-@override
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    widget.auth.getStatus().then((receivedstatus){
+    widget.auth.getStatus().then((receivedstatus) {
       setState(() {
-        status= receivedstatus ==null ? AuthStatus.notsigned : AuthStatus.signed;
+        status =
+            receivedstatus == null ? AuthStatus.notsigned : AuthStatus.signed;
       });
     });
   }
-
-
 
   void _signedIn() {
     setState(() {

@@ -50,10 +50,10 @@ class _LoginPageState extends State<LoginPage> {
             widget.onSignedIn();
           }
         }
-      } catch (e) {
+      } catch (e, stack) {
         dialog.information(context, "Error",
             "Sorry something goes wrong,  please check your login and password");
-        print(e.toString());
+        print(stack);
       }
     }
   }
