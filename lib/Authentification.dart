@@ -46,9 +46,8 @@ class Auth implements Authentification {
           if (email == user.email && password == user.password) {
             SharedPreferences sharedPreferences =
                 await SharedPreferences.getInstance();
-            var userForSharedPreferenses = jsonEncode(user.toMap());
             sharedPreferences.setString(
-                "currentuser", userForSharedPreferenses);
+                "currentuser", email);
             result = await getStatus();
           }
         }
@@ -88,7 +87,7 @@ class Auth implements Authentification {
       if (checkResponseResult(response)) {
         SharedPreferences sharedPreferences =
             await SharedPreferences.getInstance();
-        sharedPreferences.setString("currentuser", response.body);
+        sharedPreferences.setString("currentuser", email);
         result = sharedPreferences.get("currentuser");
       } else {
         print("Error: ${response.statusCode}");

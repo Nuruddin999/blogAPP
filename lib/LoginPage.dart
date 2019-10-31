@@ -95,9 +95,9 @@ class _LoginPageState extends State<LoginPage> {
       logo(),
       SizedBox(height: 10.0),
       TextFormField(
-        decoration: InputDecoration(labelText: "email"),
+        decoration: InputDecoration(labelText: "name"),
         validator: (value) {
-          return value.isEmpty ? 'Email is  required' : null;
+          return value.isEmpty ? 'Name is  required' : null;
         },
         onSaved: (value) {
           return _email = value;

@@ -18,8 +18,9 @@ class blogservice {
           accaunt: item['accaunt'],
           body: item['body'],
           image: item['image'],
-          title: item['title'],
-          id: item['id'].toString());
+          id: item['id'].toString(),
+      time: item['time'],
+      date: item['date']);
       list.add(post);
     }
     for (var post in list) {

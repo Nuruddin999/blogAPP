@@ -4,7 +4,9 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'SizeConfig.dart';
-
+import "Authentification.dart";
+import 'api/blogservice.dart';
+import 'Post.dart';
 class PostImage extends StatefulWidget {
   @override
   _PostImageState createState() => _PostImageState();
@@ -15,6 +17,7 @@ class _PostImageState extends State<PostImage> {
   final formkey = new GlobalKey<FormState>();
   String _mystory;
   String imageUrl;
+  Auth auth = new Auth();
 
   Future getImage() async {
     var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
@@ -22,28 +25,36 @@ class _PostImageState extends State<PostImage> {
       sampleImage = tempImage;
     });
   }
-  bool validateAndShare(){
-    final form=formkey.currentState;
 
-    if (form.validate()){
+  bool validateAndShare() {
+    final form = formkey.currentState;
+
+    if (form.validate()) {
       form.save();
       return true;
-    }
-    else {
+    } else {
       return false;
     }
   }
-  void uploadImage() async {
-    if (validateAndShare()){
-    var date=new DateTime.now();
-    final StorageReference=FirebaseStorage.instance.ref().child("Blog Images");
-    final uploadTask=StorageReference.child("${date.toString()}.jpg").putFile(sampleImage);
-    var url=await (await uploadTask.onComplete).ref.getDownloadURL().then((value)=>{
 
-    });
-    imageUrl=url.toString();
-    print("Image url: $url");
-  }}
+  void uploadImage() async {
+    if (validateAndShare()) {
+      var datekey=new DateTime.now();
+      final StorageReference =
+          FirebaseStorage.instance.ref().child("Blog Images");
+      final uploadTask =
+          StorageReference.child("${datekey.toString()}.jpg").putFile(sampleImage);
+      var url = await (await uploadTask.onComplete).ref.getDownloadURL();
+      String name = await auth.getStatus();
+      print(url.toString());
+      var dateformat=new DateFormat("MMM d,yyy");
+      var timeformat=new DateFormat("EEE , hh:mm aaa");
+      String date=dateformat.format(datekey);
+      String time=timeformat.format(datekey);
+
+      blogservice().addData(new Post(image: url.toString(),body: _mystory,accaunt: name,time: time,date: date));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,8 +73,10 @@ class _PostImageState extends State<PostImage> {
           getImage();
         },
         tooltip: "Add image",
-        child: Icon(Icons.add_a_photo,
-        color: Colors.pink[700],),
+        child: Icon(
+          Icons.add_a_photo,
+          color: Colors.pink[700],
+        ),
       ),
     );
   }
@@ -75,21 +88,16 @@ class _PostImageState extends State<PostImage> {
             key: formkey,
             child: Column(
               children: <Widget>[
-                 Image.file(
-                    sampleImage,
-                    height:MediaQuery.of(context).size.width,
-                    width: MediaQuery.of(context).size.width
-
-                  ),
-
+                Image.file(sampleImage,
+                    height: MediaQuery.of(context).size.width,
+                    width: MediaQuery.of(context).size.width),
                 SizedBox(
                   height: 15.0,
                 ),
                 TextFormField(
-                  decoration: InputDecoration(labelText: "So whats happened  ?)"),
-
+                  decoration:
+                      InputDecoration(labelText: "So whats happened  ?)"),
                   validator: (value) {
-
                     return value.isEmpty ? "Please write you story )" : null;
                   },
                   onSaved: (value) {
@@ -104,7 +112,7 @@ class _PostImageState extends State<PostImage> {
                   color: Colors.pink[700],
                   child: Text("Share your story !"),
                   textColor: Colors.white,
-                  onPressed: (){
+                  onPressed: () {
                     uploadImage();
                   },
                 )
