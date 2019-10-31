@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'Authentification.dart';
+import 'PostImage.dart';
 import 'User.dart';
 import 'api/blogservice.dart';
 
@@ -43,7 +44,11 @@ class _MainPageState extends State<MainPage> {
                     _exit();
               }),
               IconButton(
-                  icon: Icon(Icons.add_a_photo, color: Colors.deepOrangeAccent), onPressed: () {})
+                  icon: Icon(Icons.add_a_photo, color: Colors.deepOrangeAccent), onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context){
+                      return PostImage();
+                    }));
+              })
             ],
           ),
         ),
