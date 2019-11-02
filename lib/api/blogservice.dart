@@ -44,24 +44,28 @@ class blogservice {
     }
   }
 
-  Future<void> deleteData(String number) async {
+  Future<bool> deleteData(String number) async {
     Response response = await delete("$url/$number");
     if (response.statusCode < 200 ||
         response.statusCode > 400 ||
         json == null) {
+      return false;
       throw new Exception("Error whil creating post");
+
     } else {
       print("Post deleted");
+      return true;
     }
   }
 
-  Future<void> addData(Post p) async {
+  Future<bool> addData(Post p) async {
     Response response = await post(url, body: p.toMap());
     if (response.statusCode < 200 ||
         response.statusCode > 400 ||
         json == null) {
-      throw new Exception("Error whil creating post");
+      return false;
     } else {
+      return true;
       print("Post created");
     }
   }

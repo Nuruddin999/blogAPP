@@ -28,6 +28,16 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
+  void _deletePost(String number, index) {
+    blogservice().deleteData(number).then((result){
+  if (result){
+    setState(() {
+      posts.removeAt(index);
+    });
+  }
+});
+  }
+
   @override
   void initState() {
     super.initState();
@@ -97,16 +107,12 @@ class _MainPageState extends State<MainPage> {
         delegate: SliverChildBuilderDelegate((context, index) {
       return Container(
         decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: Color(0xFFF0F0F0)
-            )
-          )
-        ),
+            border: Border(bottom: BorderSide(color: Color(0xFFF0F0F0)))),
         child: Column(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
               child: Row(
                 children: <Widget>[
                   Expanded(
@@ -114,10 +120,23 @@ class _MainPageState extends State<MainPage> {
                     posts[index].accaunt,
                     style: TextStyle(fontSize: 13),
                   )),
-                  Image.asset(
-                    "assets/more.png",
-                    height: 15,
-                    fit: BoxFit.contain,
+                  DropdownButton<String>(
+                    icon: Image.asset(
+                      "assets/more.png",
+                      height: 35,
+                      width: 20,
+                    ),
+                    items: <String>["edit", "delete"]
+                        .map((String dropdownMenuItem) {
+                      return DropdownMenuItem<String>(
+                          value: dropdownMenuItem,
+                          child: Text(dropdownMenuItem));
+                    }).toList(),
+                    onChanged: (String valueselected) {
+                      if (valueselected == "delete") {
+                        _deletePost(posts[index].id, index);
+                      }
+                    },
                   ),
                 ],
               ),
@@ -129,33 +148,41 @@ class _MainPageState extends State<MainPage> {
               width: double.infinity,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical:2.0,horizontal: 10),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 2.0, horizontal: 10),
               child: Row(
-          children: <Widget>[
-              Image.asset("assets/heart.png", height: 35,width: 25,)
-          ],
-          ),
+                children: <Widget>[
+                  Image.asset(
+                    "assets/heart.png",
+                    height: 35,
+                    width: 25,
+                  )
+                ],
+              ),
             ),
             Align(
               alignment: Alignment.centerLeft,
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical:10.0,horizontal:10.0),
+                padding: const EdgeInsets.symmetric(
+                    vertical: 10.0, horizontal: 10.0),
                 child: Text("1000 likes"),
               ),
             ),
             Align(
               alignment: Alignment.centerLeft,
               child: Padding(
-                padding: const EdgeInsets.only(left: 10.0,bottom: 20.0),
-                child: RichText(text: TextSpan(
-                  style: TextStyle(fontSize: 14,
-                  color: Colors.black),
-                    children: <TextSpan>[
-TextSpan(text: "${posts[index].accaunt} ",style: TextStyle(fontWeight: FontWeight.bold)),
-                      TextSpan(text: "${posts[index].body}",style: TextStyle(fontWeight: FontWeight.normal))
-
-                  ]
-                )),
+                padding: const EdgeInsets.only(left: 10.0, bottom: 20.0),
+                child: RichText(
+                    text: TextSpan(
+                        style: TextStyle(fontSize: 14, color: Colors.black),
+                        children: <TextSpan>[
+                      TextSpan(
+                          text: "${posts[index].accaunt} ",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      TextSpan(
+                          text: "${posts[index].body}",
+                          style: TextStyle(fontWeight: FontWeight.normal))
+                    ])),
               ),
             )
           ],

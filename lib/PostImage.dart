@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'MainPage.dart';
 import 'SizeConfig.dart';
 import "Authentification.dart";
 import 'api/blogservice.dart';
@@ -52,7 +53,12 @@ class _PostImageState extends State<PostImage> {
       String date=dateformat.format(datekey);
       String time=timeformat.format(datekey);
 
-      blogservice().addData(new Post(image: url.toString(),body: _mystory,accaunt: name,time: time,date: date));
+      blogservice().addData(new Post(image: url.toString(),body: _mystory,accaunt: name,time: time,date: date)).then((result){
+        if(result){
+        Navigator.push(context, MaterialPageRoute(builder: (context){
+          return MainPage();
+        }));}
+      });
     }
   }
 
