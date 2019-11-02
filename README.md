@@ -16,6 +16,7 @@ For help getting started with Flutter, view our
 samples, guidance on mobile development, and a full API reference.
 
 ### to do:
-use "then" in await functions instead if/else;
+- use "then" in await functions instead if/else;
+- use catchError in future functions;
 
 
