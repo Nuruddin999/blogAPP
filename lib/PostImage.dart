@@ -9,11 +9,16 @@ import "Authentification.dart";
 import 'api/blogservice.dart';
 import 'Post.dart';
 class PostImage extends StatefulWidget {
+  PostImage({this.post});
+  final Post post;
   @override
   _PostImageState createState() => _PostImageState();
 }
-
+enum ChangeType { addnewpost, updatecurrentpost }
 class _PostImageState extends State<PostImage> {
+  ChangeType changeType;
+
+
   File sampleImage;
   final formkey = new GlobalKey<FormState>();
   String _mystory;
@@ -37,15 +42,20 @@ class _PostImageState extends State<PostImage> {
       return false;
     }
   }
+Future<String> uploadImage() async{
+    String url;
+  if (validateAndShare()) {
+    var datekey=new DateTime.now();
+    final StorageReference = FirebaseStorage.instance.ref().child("Blog Images");
+    final uploadTask =
+    StorageReference.child("${datekey.toString()}.jpg").putFile(sampleImage);
+    url =  (await uploadTask.onComplete).ref.getDownloadURL().toString();
 
-  void uploadImage() async {
-    if (validateAndShare()) {
-      var datekey=new DateTime.now();
-      final StorageReference =
-          FirebaseStorage.instance.ref().child("Blog Images");
-      final uploadTask =
-          StorageReference.child("${datekey.toString()}.jpg").putFile(sampleImage);
-      var url = await (await uploadTask.onComplete).ref.getDownloadURL();
+} return url;
+  }
+  void addPost() async {
+    var datekey=new DateTime.now();
+  String url= await uploadImage();
       String name = await auth.getStatus();
       print(url.toString());
       var dateformat=new DateFormat("MMM d,yyy");
@@ -60,30 +70,59 @@ class _PostImageState extends State<PostImage> {
         }));}
       });
     }
+  void updatePost() async {
+    if(validateAndShare()){
+      if(sampleImage!=null){
+        var datekey=new DateTime.now();
+        final StorageReference =
+        FirebaseStorage.instance.ref().child("Blog Images");
+        final uploadTask =
+        StorageReference.child("${datekey.toString()}.jpg").putFile(sampleImage);
+        var url = await (await uploadTask.onComplete).ref.getDownloadURL();
+       widget.post.body=_mystory;
+       widget.post.image=url.toString();
+        blogservice().updateData(widget.post.id, widget.post);
+      } else {
+        widget.post.body=_mystory;
+        blogservice().updateData(widget.post.id, widget.post);
+      }
+    }
   }
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      changeType = widget.post != null ? ChangeType.updatecurrentpost: ChangeType.addnewpost;
+    });
 
+  }
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Paint your history"),
-        centerTitle: true,
-      ),
-      body: Center(
-          child: sampleImage == null
-              ? Text("Select your image")
-              : beginUploadImage()),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          getImage();
-        },
-        tooltip: "Add image",
-        child: Icon(
-          Icons.add_a_photo,
-          color: Colors.pink[700],
+        appBar: AppBar(
+          title: Text("Paint your history"),
+          centerTitle: true,
         ),
-      ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              changeType == ChangeType.addnewpost
+                  ? makeStartAddPostWidget():makeUpdatePostWidget(),
+            ],
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            getImage();
+          },
+          tooltip: "Add image",
+          child: Icon(
+            Icons.add_a_photo,
+            color: Colors.pink[700],
+          ),
+        ),
     );
   }
 
@@ -119,7 +158,7 @@ class _PostImageState extends State<PostImage> {
                   child: Text("Share your story !"),
                   textColor: Colors.white,
                   onPressed: () {
-                    uploadImage();
+                    addPost();
                   },
                 )
               ],
@@ -127,4 +166,54 @@ class _PostImageState extends State<PostImage> {
       ),
     );
   }
+  Widget makeStartAddPostWidget(){
+    return Center(
+        child:  sampleImage == null
+            ? Text("Select your image")
+            : beginUploadImage());
+  }
+  Widget makeUpdatePostWidget(){
+    setState(() {
+      _mystory=widget.post.body;
+    });
+
+    return Container(
+        child: Form(
+            key: formkey,
+            child: Column(
+              children: <Widget>[
+               sampleImage == null? Image.network(widget.post.image): Image.file(sampleImage,
+                    height: MediaQuery.of(context).size.width,
+                    width: MediaQuery.of(context).size.width),
+                SizedBox(
+                  height: 15.0,
+                ),
+                TextFormField(initialValue: widget.post.body ,
+                  decoration:
+                  InputDecoration(labelText: "So whats happened  ?)"),
+                  validator: (value) {
+                    return value.isEmpty ? "Please write you story )" : null;
+                  },
+                  onSaved: (value) {
+                    _mystory = value;
+                  },
+                ),
+                SizedBox(
+                  height: 15.0,
+                ),
+                RaisedButton(
+                  elevation: 10.0,
+                  color: Colors.pink[700],
+                  child: Text("Update your story !"),
+                  textColor: Colors.white,
+                  onPressed: () {
+                    updatePost();
+                  },
+                )
+              ],
+            )),
+    );
+  }
 }
+
+

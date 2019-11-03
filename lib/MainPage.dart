@@ -16,6 +16,7 @@ class MainPage extends StatefulWidget {
   _MainPageState createState() => _MainPageState();
 }
 
+
 class _MainPageState extends State<MainPage> {
   List<Post> posts = [];
 
@@ -34,13 +35,17 @@ class _MainPageState extends State<MainPage> {
     setState(() {
       posts.removeAt(index);
     });
+  } else {
+    //make snackbar error
   }
 });
   }
 
+
   @override
   void initState() {
     super.initState();
+
     blogservice().getAllData().then((list) {
       for (var post in list) {
         posts.add(post);
@@ -135,6 +140,10 @@ class _MainPageState extends State<MainPage> {
                     onChanged: (String valueselected) {
                       if (valueselected == "delete") {
                         _deletePost(posts[index].id, index);
+                      } else {
+                        Navigator.push(context, MaterialPageRoute(builder: (context){
+                          return PostImage(post: posts[index],);
+                        }));
                       }
                     },
                   ),
