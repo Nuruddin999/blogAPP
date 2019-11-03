@@ -15,7 +15,8 @@ class MainPage extends StatefulWidget {
   @override
   _MainPageState createState() => _MainPageState();
 }
-
+var currentvalue;
+const dropdownitems=["delete",'edit'];
 class _MainPageState extends State<MainPage> {
   List<Post> posts = [];
 
@@ -114,6 +115,17 @@ class _MainPageState extends State<MainPage> {
                     posts[index].accaunt,
                     style: TextStyle(fontSize: 13),
                   )),
+                  DropdownButton(value: currentvalue, items: dropdownitems.map((String value){
+                    return DropdownMenuItem<String>(child: Text(value),value: value,);
+                  }).toList(), onChanged: (newvalue){
+                    setState(() {
+                      currentvalue=newvalue;
+                    });
+                    switch (currentvalue){
+                      case "delete":
+                        posts.removeAt(index);
+                    }
+                  }),
                   Image.asset(
                     "assets/more.png",
                     height: 15,
