@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'MainPage.dart';
+import 'RoutingPage.dart';
 import 'SizeConfig.dart';
 import "Authentification.dart";
 import 'api/blogservice.dart';
@@ -54,15 +55,16 @@ class _PostImageState extends State<PostImage> {
       String time=timeformat.format(datekey);
 if (await blogservice().addData(new Post(image: url.toString(),body: _mystory,accaunt: name,time: time,date: date))){
   Navigator.push(context, MaterialPageRoute(builder: (context){
-    return MainPage();
+    return RoutingPage(auth: new Auth(),);
   }));
 }
-      ;
+
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    print("${MediaQuery.of(context).size.width}  ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size}");
     SizeConfig().init(context);
     return Scaffold(
       appBar: AppBar(
@@ -89,6 +91,7 @@ if (await blogservice().addData(new Post(image: url.toString(),body: _mystory,ac
   Widget beginUploadImage() {
     return SingleChildScrollView(
       child: Container(
+
         child: Form(
             key: formkey,
             child: Column(
@@ -97,17 +100,21 @@ if (await blogservice().addData(new Post(image: url.toString(),body: _mystory,ac
                     height: MediaQuery.of(context).size.width,
                     width: MediaQuery.of(context).size.width),
                 SizedBox(
-                  height: 15.0,
+                  height: 5.0,
                 ),
-                TextFormField(
-                  decoration:
-                      InputDecoration(labelText: "So whats happened  ?)"),
-                  validator: (value) {
-                    return value.isEmpty ? "Please write you story )" : null;
-                  },
-                  onSaved: (value) {
-                    _mystory = value;
-                  },
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 1.0,horizontal: 5.0),
+                  child: TextFormField(
+                      maxLines: 4,
+                    decoration:
+                        InputDecoration(labelText: "So whats happened  ?)"),
+                    validator: (value) {
+                      return value.isEmpty ? "Please write you story )" : null;
+                    },
+                    onSaved: (value) {
+                      _mystory = value;
+                    },
+                ),
                 ),
                 SizedBox(
                   height: 15.0,

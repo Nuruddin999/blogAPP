@@ -11,5 +11,5 @@ import 'api/blogservice.dart';
 
 void main() => runApp(MaterialApp(title: "Draft",
   theme: new ThemeData.light(),
-  home: MainPage(),
+  home: RoutingPage(auth: new Auth(), ),
 ));

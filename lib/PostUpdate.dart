@@ -2,8 +2,10 @@
 
 import 'package:flutter/material.dart';
 
+import 'Authentification.dart';
 import 'MainPage.dart';
 import 'Post.dart';
+import 'RoutingPage.dart';
 import 'api/blogservice.dart';
 
 class PostUpdate extends StatefulWidget {
@@ -31,7 +33,7 @@ class _PostUpdateState extends State<PostUpdate> {
     print(widget.post.toString());
     if (await blogservice().updateData(widget.post.id, widget.post)){
       Navigator.push(context, MaterialPageRoute(builder: (context){
-        return MainPage();
+        return RoutingPage(auth: new Auth(),);
       }));
     }
     }

@@ -46,7 +46,10 @@ class _MainPageState extends State<MainPage> {
     super.initState();
     blogservice().getAllData().then((list) {
       for (var post in list) {
-        posts.add(post);
+        setState(() {
+          posts.add(post);
+        });
+
       }
     });
   }
