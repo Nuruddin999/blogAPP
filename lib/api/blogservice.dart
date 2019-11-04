@@ -44,13 +44,15 @@ class blogservice {
     }
   }
 
-  Future<void> deleteData(String number) async {
+  Future<bool> deleteData(String number) async {
     Response response = await delete("$url/$number");
     if (response.statusCode < 200 ||
         response.statusCode > 400 ||
         json == null) {
+      return false;
       throw new Exception("Error whil creating post");
     } else {
+      return true;
       print("Post deleted");
     }
   }

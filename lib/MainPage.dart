@@ -16,8 +16,10 @@ class MainPage extends StatefulWidget {
   @override
   _MainPageState createState() => _MainPageState();
 }
+
 var currentvalue;
-const dropdownitems=["delete",'edit'];
+const dropdownitems = ["delete", 'edit'];
+
 class _MainPageState extends State<MainPage> {
   List<Post> posts = [];
 
@@ -27,6 +29,15 @@ class _MainPageState extends State<MainPage> {
       widget.onSignedOut();
     } catch (e) {
       print(e.toString());
+    }
+  }
+
+  void _deletePost(Post post) async {
+    if (await blogservice().deleteData(post.id)) {
+      setState(() {
+        posts.remove(post);
+      });
+
     }
   }
 
@@ -99,16 +110,12 @@ class _MainPageState extends State<MainPage> {
         delegate: SliverChildBuilderDelegate((context, index) {
       return Container(
         decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: Color(0xFFF0F0F0)
-            )
-          )
-        ),
+            border: Border(bottom: BorderSide(color: Color(0xFFF0F0F0)))),
         child: Column(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
               child: Row(
                 children: <Widget>[
                   Expanded(
@@ -116,30 +123,38 @@ class _MainPageState extends State<MainPage> {
                     posts[index].accaunt,
                     style: TextStyle(fontSize: 13),
                   )),
-                  DropdownButton(value: currentvalue, items: dropdownitems.map((String value){
-                    return DropdownMenuItem<String>(child: Text(value),value: value,);
-                  }).toList(), onChanged: (newvalue){
-                    setState(() {
-                      currentvalue=newvalue;
-                    });
-                    switch (currentvalue){
-                      case "delete":
-                        posts.removeAt(index);
-                        break;
-                      case "edit":
-                        {
-                          Navigator.push(context, MaterialPageRoute(builder: (context){
-                            return PostUpdate(post: posts[index],);
-                          }));
-                        }
-
-                    }
-                  }),
-                  Image.asset(
-                    "assets/more.png",
-                    height: 15,
-                    fit: BoxFit.contain,
+                  PopupMenuButton<int>(
+                    itemBuilder: (context) => [
+                      PopupMenuItem(
+                        value: 1,
+                        child: Text("Edit"),
+                      ),
+                      PopupMenuItem(
+                        value: 2,
+                        child: Text("Delete"),
+                      ),
+                    ],
+                    onSelected: (value) {
+                      switch (value) {
+                        case 1:
+                          {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return PostUpdate(
+                                post: posts[index],
+                              );
+                            }));
+                          }
+                          break;
+                        case 2:
+                          {
+                            _deletePost(posts[index]);
+                          }
+                          break;
+                      }
+                    },
                   ),
+
                 ],
               ),
             ),
@@ -150,33 +165,41 @@ class _MainPageState extends State<MainPage> {
               width: double.infinity,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical:2.0,horizontal: 10),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 2.0, horizontal: 10),
               child: Row(
-          children: <Widget>[
-              Image.asset("assets/heart.png", height: 35,width: 25,)
-          ],
-          ),
+                children: <Widget>[
+                  Image.asset(
+                    "assets/heart.png",
+                    height: 35,
+                    width: 25,
+                  )
+                ],
+              ),
             ),
             Align(
               alignment: Alignment.centerLeft,
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical:10.0,horizontal:10.0),
+                padding: const EdgeInsets.symmetric(
+                    vertical: 10.0, horizontal: 10.0),
                 child: Text("1000 likes"),
               ),
             ),
             Align(
               alignment: Alignment.centerLeft,
               child: Padding(
-                padding: const EdgeInsets.only(left: 10.0,bottom: 20.0),
-                child: RichText(text: TextSpan(
-                  style: TextStyle(fontSize: 14,
-                  color: Colors.black),
-                    children: <TextSpan>[
-TextSpan(text: "${posts[index].accaunt} ",style: TextStyle(fontWeight: FontWeight.bold)),
-                      TextSpan(text: "${posts[index].body}",style: TextStyle(fontWeight: FontWeight.normal))
-
-                  ]
-                )),
+                padding: const EdgeInsets.only(left: 10.0, bottom: 20.0),
+                child: RichText(
+                    text: TextSpan(
+                        style: TextStyle(fontSize: 14, color: Colors.black),
+                        children: <TextSpan>[
+                      TextSpan(
+                          text: "${posts[index].accaunt} ",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      TextSpan(
+                          text: "${posts[index].body}",
+                          style: TextStyle(fontWeight: FontWeight.normal))
+                    ])),
               ),
             )
           ],
