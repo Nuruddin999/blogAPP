@@ -55,24 +55,28 @@ class blogservice {
     }
   }
 
-  Future<void> addData(Post p) async {
+  Future<bool> addData(Post p) async {
     Response response = await post(url, body: p.toMap());
     if (response.statusCode < 200 ||
         response.statusCode > 400 ||
         json == null) {
+      return false;
       throw new Exception("Error whil creating post");
     } else {
+      return true;
       print("Post created");
     }
   }
 
-  Future<void> updateData(String number, Post post) async {
+  Future<bool> updateData(String number, Post post) async {
     Response response = await put("$url/$number", body: post.toMap());
     if (response.statusCode < 200 ||
         response.statusCode > 400 ||
         json == null) {
+      return false;
       throw new Exception("Error whil creating post");
     } else {
+      return true;
       print("Post updated");
     }
   }

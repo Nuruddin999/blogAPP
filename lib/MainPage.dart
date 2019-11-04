@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'Authentification.dart';
 import 'Post.dart';
 import 'PostImage.dart';
+import 'PostUpdate.dart';
 import 'User.dart';
 import 'api/blogservice.dart';
 
@@ -124,6 +125,14 @@ class _MainPageState extends State<MainPage> {
                     switch (currentvalue){
                       case "delete":
                         posts.removeAt(index);
+                        break;
+                      case "edit":
+                        {
+                          Navigator.push(context, MaterialPageRoute(builder: (context){
+                            return PostUpdate(post: posts[index],);
+                          }));
+                        }
+
                     }
                   }),
                   Image.asset(
