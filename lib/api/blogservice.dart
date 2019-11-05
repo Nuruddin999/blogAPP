@@ -2,12 +2,14 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 
+import '../Hashrag.dart';
 import '../Post.dart';
 import '../User.dart';
 
 class blogservice {
   String url = "http://10.0.2.2:3000/blogs";
   String userurl = "http://10.0.2.2:3000/users";
+  String hashtagurl="http://10.0.2.2:3000/hashtags";
 
   Future<List<Post>> getAllData() async {
     List<Post> list = [];
@@ -113,4 +115,40 @@ class blogservice {
       }
     }
 }
+  Future<List<Hashtag>> getAllHashtags() async {
+    List<Hashtag> list = [];
+    Response response = await get(hashtagurl);
+    var data = jsonDecode(response.body);
+    for (var item in data) {
+      Hashtag hashtag = Hashtag(
+          name: item['name'],
+          postId: item['post id'],
+
+          id: item['id'].toString());
+
+      list.add(hashtag);
+    }
+    for (var hash in list) {
+      print(hash.toString());
+    }
+
+    return list;
+  }
+  Future<bool> addHashtag(List<Hashtag> hashtags) async {
+
+    for (var hashtag in hashtags){
+      Response response = await post(hashtagurl, body: hashtag.toMap());
+      if (response.statusCode < 200 ||
+          response.statusCode > 400 ||
+          json == null) {
+        return false;
+        throw new Exception("Error whil creating post");
+      } else {
+        return true;
+        print("Post created");
+      }
+    }
+
+
+  }
 }

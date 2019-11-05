@@ -57,6 +57,7 @@ class _PostUpdateState extends State<PostUpdate> {
                 height: 15.0,
               ),
               TextFormField(initialValue: widget.post.body ,
+                maxLines: 4,
                 decoration:
                 InputDecoration(labelText: "So whats happened  ?)"),
                 validator: (value) {

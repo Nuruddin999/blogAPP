@@ -4,6 +4,7 @@ import 'Authentification.dart';
 import 'Post.dart';
 import 'PostImage.dart';
 import 'PostUpdate.dart';
+import 'ShowHideText.dart';
 import 'User.dart';
 import 'api/blogservice.dart';
 
@@ -191,7 +192,8 @@ class _MainPageState extends State<MainPage> {
             Align(
               alignment: Alignment.centerLeft,
               child: Padding(
-                padding: const EdgeInsets.only(left: 10.0, bottom: 20.0),
+
+                padding: const EdgeInsets.only(left: 10.0),
                 child: RichText(
                     text: TextSpan(
                         style: TextStyle(fontSize: 14, color: Colors.black),
@@ -199,12 +201,14 @@ class _MainPageState extends State<MainPage> {
                       TextSpan(
                           text: "${posts[index].accaunt} ",
                           style: TextStyle(fontWeight: FontWeight.bold)),
-                      TextSpan(
-                          text: "${posts[index].body}",
-                          style: TextStyle(fontWeight: FontWeight.normal))
+
                     ])),
+
               ),
-            )
+
+            ),
+              Align(alignment: Alignment.centerLeft,
+                  child: DescriptionTextWidget(text: posts[index].body))
           ],
         ),
       );

@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'Hashrag.dart';
 import 'MainPage.dart';
 import 'RoutingPage.dart';
 import 'SizeConfig.dart';
@@ -38,7 +39,16 @@ class _PostImageState extends State<PostImage> {
       return false;
     }
   }
-
+  List<Hashtag> getHashtags(String text,String id){
+    List<String> words=text.split(" ");
+    List<Hashtag> hashtags=[];
+    for (var word in words){
+      if(word.startsWith("#")){
+        hashtags.add(new Hashtag(postId: id,name: word));
+      }
+    }
+    return hashtags;
+  }
   void uploadImage() async {
     if (validateAndShare()) {
       var datekey=new DateTime.now();
@@ -53,7 +63,10 @@ class _PostImageState extends State<PostImage> {
       var timeformat=new DateFormat("EEE , hh:mm aaa");
       String date=dateformat.format(datekey);
       String time=timeformat.format(datekey);
-if (await blogservice().addData(new Post(image: url.toString(),body: _mystory,accaunt: name,time: time,date: date))){
+      Post post=new Post(body: _mystory,image: url.toString(),accaunt: name,time: time,date: date);
+      List<Hashtag> hashtags=getHashtags(_mystory,post.body);
+
+if (await blogservice().addData(post) && await blogservice().addHashtag(hashtags)){
   Navigator.push(context, MaterialPageRoute(builder: (context){
     return RoutingPage(auth: new Auth(),);
   }));

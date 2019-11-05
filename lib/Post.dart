@@ -9,6 +9,7 @@ class Post {
   String date;
   String time;
 
+
   Post({this.body, this.accaunt, this.image, this.id, this.date, this.time});
 
   factory Post.fromJson(Map<String, dynamic> json) {
@@ -18,7 +19,8 @@ class Post {
         image: json['image'],
         id: json['id'].toString(),
         time: json['time'],
-        date: json['date']);
+        date: json['date'],
+   );
   }
 
   Post.fromJsonList(Map json)
