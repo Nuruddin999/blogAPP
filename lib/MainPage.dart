@@ -23,7 +23,7 @@ const dropdownitems = ["delete", 'edit'];
 
 class _MainPageState extends State<MainPage> {
   List<Post> posts = [];
-
+  bool pressAttention;
   void _exit() async {
     try {
       await widget.auth.logOut();
@@ -53,6 +53,7 @@ class _MainPageState extends State<MainPage> {
 
       }
     });
+     pressAttention=true;
   }
 
   @override
@@ -110,6 +111,7 @@ class _MainPageState extends State<MainPage> {
   }
 
   Widget postItem(List<Post> posts, context) {
+
     return SliverList(
         delegate: SliverChildBuilderDelegate((context, index) {
       return Container(
@@ -173,10 +175,23 @@ class _MainPageState extends State<MainPage> {
                   const EdgeInsets.symmetric(vertical: 2.0, horizontal: 10),
               child: Row(
                 children: <Widget>[
-                  Image.asset(
-                    "assets/heart.png",
+                  IconButton(icon:pressAttention ? Image.asset(
+                      "assets/heart.png",
+                      height: 35,
+                      width: 25,
+
+                    ):Image.asset(
+                    "assets/redheart.png",
                     height: 35,
                     width: 25,
+
+                  ) ,
+
+                    onPressed: (){
+                      setState(() {
+pressAttention=!pressAttention;
+                      });
+                  },
                   )
                 ],
               ),
