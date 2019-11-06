@@ -16,13 +16,15 @@ class blogservice {
     Response response = await get(url);
     var data = jsonDecode(response.body);
     for (var item in data) {
+
       Post post = Post(
           accaunt: item['accaunt'],
           body: item['body'],
           image: item['image'],
           id: item['id'].toString(),
       time: item['time'],
-      date: item['date']);
+      date: item['date'],
+      like: int.parse(item['like']));
       list.add(post);
     }
     for (var post in list) {

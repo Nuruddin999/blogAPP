@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'Authentification.dart';
 import 'Post.dart';
 import 'PostImage.dart';
+import 'PostListitem.dart';
 import 'PostUpdate.dart';
 import 'ShowHideText.dart';
 import 'User.dart';
@@ -23,7 +24,7 @@ const dropdownitems = ["delete", 'edit'];
 
 class _MainPageState extends State<MainPage> {
   List<Post> posts = [];
-  bool pressAttention;
+  bool likebuttonpressed=false;
   void _exit() async {
     try {
       await widget.auth.logOut();
@@ -42,6 +43,19 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
+  /*void likeOrDislikePost(Post post, bool buttonlikepressed){
+    setState(() {
+      buttonlikepressed==true ? post.like=post.like+1 : post.like=post.like-1;
+      if(post.like<0){
+        post.like=0;
+      }
+      buttonlikepressed ==true ?  buttonlikepressed ==false: null;
+    });
+
+    blogservice().updateData(post.id, post);
+
+  }*/
+
   @override
   void initState() {
     super.initState();
@@ -49,15 +63,16 @@ class _MainPageState extends State<MainPage> {
       for (var post in list) {
         setState(() {
           posts.add(post);
+
         });
 
       }
     });
-     pressAttention=true;
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFFAFAFA),
@@ -80,7 +95,7 @@ class _MainPageState extends State<MainPage> {
         ),
       ),
       body: CustomScrollView(
-        slivers: <Widget>[postItem(posts, context)],
+        slivers: <Widget>[postItem(posts,context)],
       ),
       bottomNavigationBar: BottomAppBar(
         color: Colors.grey[900],
@@ -114,119 +129,7 @@ class _MainPageState extends State<MainPage> {
 
     return SliverList(
         delegate: SliverChildBuilderDelegate((context, index) {
-      return Container(
-        decoration: BoxDecoration(
-            border: Border(bottom: BorderSide(color: Color(0xFFF0F0F0)))),
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                      child: Text(
-                    posts[index].accaunt,
-                    style: TextStyle(fontSize: 13),
-                  )),
-                  PopupMenuButton<int>(
-                    itemBuilder: (context) => [
-                      PopupMenuItem(
-                        value: 1,
-                        child: Text("Edit"),
-                      ),
-                      PopupMenuItem(
-                        value: 2,
-                        child: Text("Delete"),
-                      ),
-                    ],
-                    onSelected: (value) {
-                      switch (value) {
-                        case 1:
-                          {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                              return PostUpdate(
-                                post: posts[index],
-                              );
-                            }));
-                          }
-                          break;
-                        case 2:
-                          {
-                            _deletePost(posts[index]);
-                          }
-                          break;
-                      }
-                    },
-                  ),
-
-                ],
-              ),
-            ),
-            Image.network(
-              posts[index].image,
-              fit: BoxFit.cover,
-              height: 350,
-              width: double.infinity,
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 2.0, horizontal: 10),
-              child: Row(
-                children: <Widget>[
-                  IconButton(icon:pressAttention ? Image.asset(
-                      "assets/heart.png",
-                      height: 35,
-                      width: 25,
-
-                    ):Image.asset(
-                    "assets/redheart.png",
-                    height: 35,
-                    width: 25,
-
-                  ) ,
-
-                    onPressed: (){
-                      setState(() {
-pressAttention=!pressAttention;
-                      });
-                  },
-                  )
-                ],
-              ),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 10.0, horizontal: 10.0),
-                child: Text("1000 likes"),
-              ),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-
-                padding: const EdgeInsets.only(left: 10.0),
-                child: RichText(
-                    text: TextSpan(
-                        style: TextStyle(fontSize: 14, color: Colors.black),
-                        children: <TextSpan>[
-                      TextSpan(
-                          text: "${posts[index].accaunt} ",
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-
-                    ])),
-
-              ),
-
-            ),
-              Align(alignment: Alignment.centerLeft,
-                  child: DescriptionTextWidget(text: posts[index].body))
-          ],
-        ),
-      );
+      return PostListItem(posts: posts,index: index,);
     }, childCount: posts.length));
   }
 }

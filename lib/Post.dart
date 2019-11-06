@@ -8,9 +8,10 @@ class Post {
   String body;
   String date;
   String time;
+  int like=0;
 
 
-  Post({this.body, this.accaunt, this.image, this.id, this.date, this.time});
+  Post({this.body, this.accaunt, this.image, this.id, this.date, this.time,this.like});
 
   factory Post.fromJson(Map<String, dynamic> json) {
     return Post(
@@ -20,6 +21,7 @@ class Post {
         id: json['id'].toString(),
         time: json['time'],
         date: json['date'],
+      like: json['like'],
    );
   }
 
@@ -41,11 +43,13 @@ class Post {
     if (id != null) {
       map['id'] = id;
     }
+    map['like'] = id.toString();
+
     return map;
   }
 
   @override
   String toString() {
-    return "$id  $accaunt $body $image ";
+    return "$id  $accaunt $body $image $like";
   }
 }
