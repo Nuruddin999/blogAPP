@@ -16,6 +16,7 @@ class PostImage extends StatefulWidget {
 }
 
 class _PostImageState extends State<PostImage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   File sampleImage;
   final formkey = new GlobalKey<FormState>();
   String _mystory;
@@ -63,13 +64,24 @@ class _PostImageState extends State<PostImage> {
       var timeformat=new DateFormat("EEE , hh:mm aaa");
       String date=dateformat.format(datekey);
       String time=timeformat.format(datekey);
-      Post post=new Post(body: _mystory,image: url.toString(),accaunt: name,time: time,date: date);
+      Post post=new Post(body: _mystory,image: url.toString(),accaunt: name,time: time,date: date,like: 0);
       List<Hashtag> hashtags=getHashtags(_mystory,post.body);
+      hashtags.length> 0 ? blogservice().addHashtag(hashtags):null;
+if (await blogservice().addData(post)){
 
-if (await blogservice().addData(post) && await blogservice().addHashtag(hashtags)){
   Navigator.push(context, MaterialPageRoute(builder: (context){
     return RoutingPage(auth: new Auth(),);
   }));
+} else {
+  _scaffoldKey.currentState.showSnackBar( SnackBar(
+    content: Text("Error, check internet"),
+    action: SnackBarAction(
+      label: 'Undo',
+      onPressed: () {
+        // Some code to undo the change.
+      },
+    ),
+  ));
 }
 
     }
@@ -80,6 +92,7 @@ if (await blogservice().addData(post) && await blogservice().addHashtag(hashtags
     print("${MediaQuery.of(context).size.width}  ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size}");
     SizeConfig().init(context);
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text("Paint your history"),
         centerTitle: true,
@@ -139,6 +152,10 @@ if (await blogservice().addData(post) && await blogservice().addHashtag(hashtags
                   textColor: Colors.white,
                   onPressed: () {
                     uploadImage();
+
+
+                    // Find the Scaffold in the widget tree and use
+                    // it to show a SnackBar.
                   },
                 )
               ],

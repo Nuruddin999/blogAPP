@@ -9,22 +9,21 @@ import '../User.dart';
 class blogservice {
   String url = "http://10.0.2.2:3000/blogs";
   String userurl = "http://10.0.2.2:3000/users";
-  String hashtagurl="http://10.0.2.2:3000/hashtags";
+  String hashtagurl = "http://10.0.2.2:3000/hashtags";
 
   Future<List<Post>> getAllData() async {
     List<Post> list = [];
     Response response = await get(url);
     var data = jsonDecode(response.body);
     for (var item in data) {
-
       Post post = Post(
           accaunt: item['accaunt'],
           body: item['body'],
           image: item['image'],
           id: item['id'].toString(),
-      time: item['time'],
-      date: item['date'],
-      like: int.parse(item['like']));
+          time: item['time'],
+          date: item['date'],
+          like: int.parse(item['like']));
       list.add(post);
     }
     for (var post in list) {
@@ -90,8 +89,8 @@ class blogservice {
   Future<void> createUser(User u) async {
     //Check if user allready exists:
     List<User> list = [];
-    bool isexists=false;
-   Response response = await get(userurl);
+    bool isexists = false;
+    Response response = await get(userurl);
     var data = jsonDecode(response.body);
     for (var item in data) {
       User user = User(
@@ -102,11 +101,11 @@ class blogservice {
     for (var user in list) {
       if (u.email == user.email) {
         print("This user allready exists");
-        isexists=true;
-     break;
+        isexists = true;
+        break;
       }
-  }
-    if(isexists==false){
+    }
+    if (isexists == false) {
       response = await post(userurl, body: u.toMap());
       if (response.statusCode < 200 ||
           response.statusCode > 400 ||
@@ -116,7 +115,8 @@ class blogservice {
         print(response.body);
       }
     }
-}
+  }
+
   Future<List<Hashtag>> getAllHashtags() async {
     List<Hashtag> list = [];
     Response response = await get(hashtagurl);
@@ -125,7 +125,6 @@ class blogservice {
       Hashtag hashtag = Hashtag(
           name: item['name'],
           postId: item['post id'],
-
           id: item['id'].toString());
 
       list.add(hashtag);
@@ -136,21 +135,22 @@ class blogservice {
 
     return list;
   }
+
   Future<bool> addHashtag(List<Hashtag> hashtags) async {
 
-    for (var hashtag in hashtags){
-      Response response = await post(hashtagurl, body: hashtag.toMap());
-      if (response.statusCode < 200 ||
-          response.statusCode > 400 ||
-          json == null) {
-        return false;
-        throw new Exception("Error whil creating post");
-      } else {
-        return true;
-        print("Post created");
-      }
-    }
+    for (var hashtag in hashtags) {
+        Response response = await post(hashtagurl, body: hashtag.toMap());
+        if (response.statusCode < 200 ||
+            response.statusCode > 400 ||
+            json == null) {
 
+          return false;
+
+        } else {
+          return true;
+          print("Post created");
+        }
+      }
 
   }
 }

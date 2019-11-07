@@ -23,8 +23,11 @@ var currentvalue;
 const dropdownitems = ["delete", 'edit'];
 
 class _MainPageState extends State<MainPage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   List<Post> posts = [];
-  bool likebuttonpressed=false;
+  bool likebuttonpressed = false;
+
   void _exit() async {
     try {
       await widget.auth.logOut();
@@ -34,14 +37,6 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
-  void _deletePost(Post post) async {
-    if (await blogservice().deleteData(post.id)) {
-      setState(() {
-        posts.remove(post);
-      });
-
-    }
-  }
 
   /*void likeOrDislikePost(Post post, bool buttonlikepressed){
     setState(() {
@@ -59,21 +54,32 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
+
     blogservice().getAllData().then((list) {
       for (var post in list) {
         setState(() {
+
           posts.add(post);
-
         });
-
       }
+    }).catchError((onError){
+    _scaffoldKey.currentState.showSnackBar( SnackBar(
+    content: Text("Error, check internet"),
+    action: SnackBarAction(
+    label: 'Undo',
+    onPressed: () {
+    // Some code to undo the change.
+    },
+    ),
+    ));
     });
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
+
+      key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: Color(0xFFFAFAFA),
         title: Padding(
@@ -95,7 +101,7 @@ class _MainPageState extends State<MainPage> {
         ),
       ),
       body: CustomScrollView(
-        slivers: <Widget>[postItem(posts,context)],
+        slivers: <Widget>[postItem(posts, context)],
       ),
       bottomNavigationBar: BottomAppBar(
         color: Colors.grey[900],
@@ -115,8 +121,8 @@ class _MainPageState extends State<MainPage> {
                   onPressed: () {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
-                      return PostImage();
-                    }));
+                          return PostImage();
+                        }));
                   })
             ],
           ),
@@ -126,10 +132,9 @@ class _MainPageState extends State<MainPage> {
   }
 
   Widget postItem(List<Post> posts, context) {
-
     return SliverList(
         delegate: SliverChildBuilderDelegate((context, index) {
-      return PostListItem(posts: posts,index: index,);
-    }, childCount: posts.length));
+          return PostListItem(posts: posts, index: index,);
+        }, childCount: posts.length));
   }
 }

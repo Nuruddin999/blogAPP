@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'Authentification.dart';
 import 'Post.dart';
 import 'PostUpdate.dart';
+import 'RoutingPage.dart';
 import 'ShowHideText.dart';
 import 'api/blogservice.dart';
 
@@ -21,7 +23,13 @@ class _PostListItemState extends State<PostListItem> {
   Image like = Image.asset("assets/heart.png");
   bool likepressed = false;
   Color color = Colors.green;
-
+  void _deletePost(Post post) async {
+    if (await blogservice().deleteData(post.id)) {
+      Navigator.push(context, MaterialPageRoute(builder: (context){
+        return RoutingPage(auth: new Auth(),);
+      }));
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -63,7 +71,7 @@ class _PostListItemState extends State<PostListItem> {
                         break;
                       case 2:
                         {
-                          //  _deletePost(    widget.posts[widget.index]);
+                            _deletePost(widget.posts[widget.index]);
                         }
                         break;
                     }

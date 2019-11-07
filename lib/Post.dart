@@ -8,7 +8,7 @@ class Post {
   String body;
   String date;
   String time;
-  int like=0;
+  int like;
 
 
   Post({this.body, this.accaunt, this.image, this.id, this.date, this.time,this.like});
@@ -41,9 +41,9 @@ class Post {
     map['time']=time;
     map['date']=date;
     if (id != null) {
-      map['id'] = id;
+      map['id'] = id.toString();
     }
-    map['like'] = id.toString();
+    map['like'] = like.toString();
 
     return map;
   }

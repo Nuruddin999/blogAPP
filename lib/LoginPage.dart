@@ -16,6 +16,8 @@ class LoginPage extends StatefulWidget {
 enum FormType { login, register }
 
 class _LoginPageState extends State<LoginPage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   DialogBox dialog = new DialogBox();
   final formKey = GlobalKey<FormState>();
   FormType _formType = FormType.login;
@@ -45,15 +47,30 @@ class _LoginPageState extends State<LoginPage> {
           String uid = await widget.auth.signUp(_email, _password);
           print("Registered in   $uid");
           if (uid.isNotEmpty) {
-            dialog.information(
-                context, "Success!", "Your accaunt has been created");
+            _scaffoldKey.currentState.showSnackBar( SnackBar(
+              content: Text("Success! "),
+              action: SnackBarAction(
+                label: 'Undo',
+                onPressed: () {
+                  // Some code to undo the change.
+                },
+              ),
+            ));
+
             widget.onSignedIn();
           }
         }
       } catch (e, stack) {
-        dialog.information(context, "Error",
-            "Sorry something goes wrong,  please check your login and password");
         print(stack);
+        _scaffoldKey.currentState.showSnackBar( SnackBar(
+          content: Text("Error, check internet or login and password"),
+          action: SnackBarAction(
+            label: 'Undo',
+            onPressed: () {
+              // Some code to undo the change.
+            },
+          ),
+        ));
       }
     }
   }
@@ -75,6 +92,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(title: Text("Start your journey")),
       body: SingleChildScrollView(
         child: Container(
