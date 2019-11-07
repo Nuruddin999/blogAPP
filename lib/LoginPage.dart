@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'Authentification.dart';
 import 'DialogBox.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({this.auth, this.onSignedIn});
@@ -17,7 +18,7 @@ enum FormType { login, register }
 
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
+ProgressDialog pd;
   DialogBox dialog = new DialogBox();
   final formKey = GlobalKey<FormState>();
   FormType _formType = FormType.login;
@@ -36,11 +37,13 @@ class _LoginPageState extends State<LoginPage> {
 
   void submit() async {
     if (validateAndSave()) {
+
       try {
         if (_formType == FormType.login) {
           String uid = await widget.auth.signIn(_email, _password);
           print("Logged in   $uid");
           if (uid.isNotEmpty) {
+            pd.hide();
             widget.onSignedIn();
           }
         } else {
@@ -56,12 +59,13 @@ class _LoginPageState extends State<LoginPage> {
                 },
               ),
             ));
-
+pd.hide();
             widget.onSignedIn();
           }
         }
       } catch (e, stack) {
         print(stack);
+        pd.hide();
         _scaffoldKey.currentState.showSnackBar( SnackBar(
           content: Text("Error, check internet or login and password"),
           action: SnackBarAction(
@@ -91,6 +95,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    pd=new ProgressDialog(context,type: ProgressDialogType.Download);
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(title: Text("Start your journey")),
@@ -163,6 +168,7 @@ class _LoginPageState extends State<LoginPage> {
           color: Colors.purple[700],
           textColor: Colors.white,
           onPressed: () {
+
             submit();
           },
         ),

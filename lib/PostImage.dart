@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'DialogBox.dart';
 import 'Hashrag.dart';
 import 'MainPage.dart';
 import 'RoutingPage.dart';
@@ -66,23 +67,29 @@ class _PostImageState extends State<PostImage> {
       String time=timeformat.format(datekey);
       Post post=new Post(body: _mystory,image: url.toString(),accaunt: name,time: time,date: date,like: 0);
       List<Hashtag> hashtags=getHashtags(_mystory,post.body);
-      hashtags.length> 0 ? blogservice().addHashtag(hashtags):null;
-if (await blogservice().addData(post)){
+     DialogBox().information(context, "Loading", "");
+      new Future.delayed(new Duration(seconds: 3), () async {
+        Navigator.pop(context); //pop dialog
+        hashtags.length> 0 ? blogservice().addHashtag(hashtags):null;
+        if (await blogservice().addData(post)){
 
-  Navigator.push(context, MaterialPageRoute(builder: (context){
-    return RoutingPage(auth: new Auth(),);
-  }));
-} else {
-  _scaffoldKey.currentState.showSnackBar( SnackBar(
-    content: Text("Error, check internet"),
-    action: SnackBarAction(
-      label: 'Undo',
-      onPressed: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context){
+        return RoutingPage(auth: new Auth(),);
+        }));
+        } else {
+        _scaffoldKey.currentState.showSnackBar( SnackBar(
+        content: Text("Error, check internet"),
+        action: SnackBarAction(
+        label: 'Undo',
+        onPressed: () {
         // Some code to undo the change.
-      },
-    ),
-  ));
-}
+        },
+        ),
+        ));
+        }
+      });
+      //
+
 
     }
   }
@@ -151,6 +158,7 @@ if (await blogservice().addData(post)){
                   child: Text("Share your story !"),
                   textColor: Colors.white,
                   onPressed: () {
+
                     uploadImage();
 
 

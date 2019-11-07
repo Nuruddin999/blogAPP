@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 import 'Authentification.dart';
+import 'DialogBox.dart';
 import 'Post.dart';
 import 'PostImage.dart';
 import 'PostListitem.dart';
@@ -24,7 +26,7 @@ const dropdownitems = ["delete", 'edit'];
 
 class _MainPageState extends State<MainPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
+ProgressDialog pd;
   List<Post> posts = [];
   bool likebuttonpressed = false;
 
@@ -56,13 +58,16 @@ class _MainPageState extends State<MainPage> {
     super.initState();
 
     blogservice().getAllData().then((list) {
+
       for (var post in list) {
         setState(() {
 
           posts.add(post);
+
         });
       }
     }).catchError((onError){
+      pd.hide();
     _scaffoldKey.currentState.showSnackBar( SnackBar(
     content: Text("Error, check internet"),
     action: SnackBarAction(
@@ -77,9 +82,12 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    pd=new ProgressDialog(context);
+
     return Scaffold(
 
       key: _scaffoldKey,
+
       appBar: AppBar(
         backgroundColor: Color(0xFFFAFAFA),
         title: Padding(
@@ -100,7 +108,9 @@ class _MainPageState extends State<MainPage> {
           child: Image.asset("assets/login.ico"),
         ),
       ),
+
       body: CustomScrollView(
+
         slivers: <Widget>[postItem(posts, context)],
       ),
       bottomNavigationBar: BottomAppBar(
@@ -132,6 +142,7 @@ class _MainPageState extends State<MainPage> {
   }
 
   Widget postItem(List<Post> posts, context) {
+
     return SliverList(
         delegate: SliverChildBuilderDelegate((context, index) {
           return PostListItem(posts: posts, index: index,);
