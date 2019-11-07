@@ -1,4 +1,4 @@
-# flutterapp
+# Draft
 
 Blog Flutter application. This app was build as a finished test exercise
 
