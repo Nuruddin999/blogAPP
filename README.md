@@ -1,10 +1,14 @@
 # flutterapp
 
-A new Flutter application.
+Blog Flutter application. This app was build as a finished test exercise
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+##Warning !
+
+In order to run this app on emulator you nust install JSON server:
+- install this server from command line `npm install -g json-server`
+- create folder (for example: )
 
 A few resources to get you started if this is your first Flutter project:
 
