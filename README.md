@@ -6,7 +6,7 @@ Blog Flutter application. This app was build as a finished test exercise
 
 ## Warning !
 
-In order to run this app on emulator you nust install JSON server:
+In order to run this app on emulator you nust install **JSON server**:
 - install this server from command line `npm install -g json-server`
 - create folder (for example: `blog-server`)
 - put [this JSON file](https://github.com/Nuruddin999/blogAPP/blob/master/db.json) into your created folder (`your path ../blog-server/`[this JSON file](https://github.com/Nuruddin999/blogAPP/blob/master/db.json)`)
@@ -29,4 +29,9 @@ You should see: <br>
 
 ## Screenshots: 
 
-
+<ul>
+<img src="/Screenshots/Screenshot_1573164215.png" width="200" height="300">
+<img src="/Screenshots/Screenshot_1573164219.png" width="200" height="300">
+<img src="/Screenshots/Screenshot_1573164242.png" width="200" height="300">
+ <img src="/Screenshots/Screenshot_1573164800" width="200" height="300"> 
+<ul/>
