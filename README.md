@@ -4,11 +4,16 @@ Blog Flutter application. This app was build as a finished test exercise
 
 ## Getting Started
 
-##Warning !
+## Warning !
 
 In order to run this app on emulator you nust install JSON server:
 - install this server from command line `npm install -g json-server`
-- create folder (for example: )
+- create folder (for example: `blog-server`)
+- put [this JSON file](https://github.com/Nuruddin999/blogAPP/blob/master/db.json) into your created folder (`your path ../blog-server/[this JSON file](https://github.com/Nuruddin999/blogAPP/blob/master/db.json)`)
+- open ( or go in )your folder with commandline/terminal  (`cd "your path.../blog-server`)
+-type command in your terminal `\blog-server> json-server --watch  [this JSON file](https://github.com/Nuruddin999/blogAPP/blob/master/db.json)`
+You should see: 
+(https://github.com/Nuruddin999/blogAPP/blob/master/Screenshots/image.png)
 
 A few resources to get you started if this is your first Flutter project:
 
