@@ -10,12 +10,14 @@ import 'SizeConfig.dart';
 import "Authentification.dart";
 import 'api/blogservice.dart';
 import 'Post.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 class PostImage extends StatefulWidget {
   @override
   _PostImageState createState() => _PostImageState();
 }
 
 class _PostImageState extends State<PostImage> {
+  ProgressDialog progressDialog;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   File sampleImage;
   final formkey = new GlobalKey<FormState>();
@@ -52,6 +54,7 @@ class _PostImageState extends State<PostImage> {
   }
   void uploadImage() async {
     if (validateAndShare()) {
+      progressDialog.show();
       var datekey=new DateTime.now();
       final StorageReference =
           FirebaseStorage.instance.ref().child("Blog Images");
@@ -89,6 +92,8 @@ if (await blogservice().addData(post)){
 
   @override
   Widget build(BuildContext context) {
+    progressDialog=ProgressDialog(context);
+    progressDialog.style(message: "Plaese wait");
     print("${MediaQuery.of(context).size.width}  ${MediaQuery.of(context).size.height} ${MediaQuery.of(context).size}");
     SizeConfig().init(context);
     return Scaffold(
